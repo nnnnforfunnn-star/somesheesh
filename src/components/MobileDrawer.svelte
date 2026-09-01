@@ -28,50 +28,50 @@
   };
 </script>
 
-<!-- Backdrop: only rendered when open, only on mobile -->
+<!--
+  This component is only mounted by App.svelte when isMobile is true.
+  Uses position:fixed to overlay the canvas when open.
+  The drawer sits above the MobileNav (bottom: 60px).
+-->
+
 {#if $drawerOpen}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="drawer-backdrop" on:click={handleBackdropClick} aria-hidden="true"></div>
 {/if}
 
-<!-- Drawer: always in DOM, slides with transform -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <aside
   class="mobile-drawer"
   class:mobile-drawer--open={$drawerOpen}
   on:touchstart={stopPropagation}
   on:touchmove={stopPropagation}
-  aria-label={tabTitles[$activeMobileTab] ?? 'Панель'}
   aria-hidden={!$drawerOpen}
+  aria-label={tabTitles[$activeMobileTab] ?? 'Панель'}
 >
   <div class="drawer-handle-bar">
     <span class="drawer-title">{tabTitles[$activeMobileTab] ?? ''}</span>
-    <button class="drawer-close" on:click={closeDrawer} aria-label="Закрыть панель">
+    <button class="drawer-close" on:click={closeDrawer} aria-label="Закрыть">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </button>
   </div>
 
   <div class="drawer-content">
     {#if $activeMobileTab === 'tools'}
-      <div class="drawer-section">
-        <ToolBar />
-      </div>
+      <div class="drawer-section"><ToolBar /></div>
     {:else if $activeMobileTab === 'text'}
       <div class="drawer-section">
         {#if $selectedLayer?.type === 'text'}
           <TextControls />
         {:else}
-          <p class="drawer-hint">Выберите текстовый слой на холсте или добавьте новый через инструмент ТЕКСТ.</p>
+          <p class="drawer-hint">Выберите текстовый слой на холсте или добавьте новый через ИНСТРУМЕНТЫ.</p>
         {/if}
       </div>
     {:else if $activeMobileTab === 'images'}
-      <div class="drawer-section">
-        <ImageUpload />
-      </div>
+      <div class="drawer-section"><ImageUpload /></div>
     {:else if $activeMobileTab === 'theme'}
       <div class="drawer-section">
         <ThemeSelector />
@@ -79,74 +79,58 @@
         <CanvasSettingsPanel />
       </div>
     {:else if $activeMobileTab === 'layers'}
-      <div class="drawer-section drawer-section--layers">
-        <LayerList />
-      </div>
+      <div class="drawer-section drawer-section--layers"><LayerList /></div>
     {:else if $activeMobileTab === 'export'}
-      <div class="drawer-section">
-        <ExportControls />
-      </div>
+      <div class="drawer-section"><ExportControls /></div>
     {/if}
   </div>
 </aside>
 
 <style>
-  /* Backdrop: hidden on desktop */
+  /* Backdrop covers canvas but NOT the nav bar below */
   .drawer-backdrop {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 40;
   }
 
-  /* Drawer: hidden on desktop */
+  /*
+    Drawer: fixed position, sits 60px from the bottom (above the nav bar).
+    Uses vh as the primary unit — supported everywhere.
+    dvh would be ideal but is not supported on all Android browsers.
+  */
   .mobile-drawer {
-    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    height: 70vh;
+    background-color: #1E1E1E;
+    border-top: 1px solid #333333;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  @media (max-width: 768px) {
-    .drawer-backdrop {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      /* Stop above the nav bar so backdrop does not cover it */
-      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-      background-color: rgba(0, 0, 0, 0.55);
-      z-index: 40;
-    }
-
-    .mobile-drawer {
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      left: 0;
-      right: 0;
-      /* Sit directly above the nav bar */
-      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-      /* vh fallback first, then dvh override for browsers that support it */
-      height: 72vh;
-      height: 72dvh;
-      background-color: #1E1E1E;
-      border-top: 1px solid #333333;
-      z-index: 50;
-      overflow: hidden;
-      /* Closed: pushed down by full height, invisible */
-      transform: translateY(100%);
-      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .mobile-drawer--open {
-      transform: translateY(0);
-    }
+  .mobile-drawer--open {
+    transform: translateY(0);
   }
 
   .drawer-handle-bar {
     display: flex;
     align-items: center;
-    padding: 10px 14px 8px;
+    padding: 12px 16px;
     flex-shrink: 0;
     gap: 10px;
     border-bottom: 1px solid #2A2A2A;
-    min-height: 44px;
+    background-color: #252525;
   }
 
   .drawer-title {
@@ -161,17 +145,15 @@
   .drawer-close {
     background: none;
     border: none;
-    color: #555555;
+    color: #666666;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     -webkit-tap-highlight-color: transparent;
-    /* Immune to any global min-height rules */
-    width: 32px !important;
-    height: 32px !important;
-    min-height: unset !important;
-    padding: 4px;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
   }
 
   .drawer-close:active {
@@ -207,7 +189,7 @@
     font-size: 11px;
     color: #555555;
     line-height: 1.6;
-    padding: 8px 0;
+    padding: 12px 0;
     text-align: center;
   }
 </style>

@@ -10,25 +10,26 @@
     resizeStage,
   } from '../canvas/stage.js';
 
+  export let isMobile = false;
+
   let containerEl;
   let wrapperEl;
   let resizeObserver;
 
   onMount(() => {
     const { width, height } = wrapperEl.getBoundingClientRect();
-    const padding = window.innerWidth <= 768 ? 0 : 64;
+    const padding = isMobile ? 0 : 64;
     initStage(containerEl, width - padding, height - padding);
 
     resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        const padding = window.innerWidth <= 768 ? 0 : 64;
-        resizeStage(width - padding, height - padding);
+        const pad = isMobile ? 0 : 64;
+        resizeStage(width - pad, height - pad);
       }
     });
     resizeObserver.observe(wrapperEl);
 
-    // Subscribe to store changes and re-render
     const unsubLayers   = layers.subscribe(() => renderAll());
     const unsubSettings = canvasSettings.subscribe(() => refreshBackground());
     const unsubTheme    = currentTheme.subscribe(() => refreshBackground());

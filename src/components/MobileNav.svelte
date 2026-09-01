@@ -39,7 +39,11 @@
   $: hasTextSelected = $selectedLayer?.type === 'text';
 </script>
 
-<!-- Hidden on desktop, fixed at bottom on mobile -->
+<!--
+  This component is only mounted by App.svelte when isMobile is true.
+  No CSS show/hide needed — it is always visible when in the DOM.
+  It sits at the bottom of the flex column in .app-shell.
+-->
 <nav class="mobile-nav" aria-label="Навигация по панелям">
   {#each tabs as tab}
     <button
@@ -60,27 +64,14 @@
 </nav>
 
 <style>
-  /* Hidden on desktop */
   .mobile-nav {
-    display: none;
-  }
-
-  @media (max-width: 768px) {
-    .mobile-nav {
-      /* Fixed to bottom of viewport — independent of document flow */
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      /* 60px for icons+labels, extra for safe-area notch */
-      height: calc(60px + env(safe-area-inset-bottom, 0px));
-      align-items: flex-start;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      background-color: #1E1E1E;
-      border-top: 1px solid #333333;
-      z-index: 100;
-    }
+    display: flex;
+    flex-shrink: 0;
+    width: 100%;
+    background-color: #1E1E1E;
+    border-top: 2px solid #8B0000;
+    /* Fixed 60px content height + safe area below for notched phones */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .nav-tab {
@@ -89,18 +80,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     background: none;
     border: none;
     color: #555555;
     cursor: pointer;
     position: relative;
-    transition: color 0.15s;
-    padding: 8px 2px;
+    transition: color 0.15s, background-color 0.1s;
+    padding: 10px 2px;
+    height: 60px;
+    min-height: 60px;
     -webkit-tap-highlight-color: transparent;
-    /* Explicit 60px — must not be overridden by any global rule */
-    height: 60px !important;
-    min-height: unset !important;
   }
 
   .nav-tab:active {
@@ -109,14 +99,15 @@
 
   .nav-tab--active {
     color: #8B0000;
+    background-color: #1A0000;
   }
 
   .nav-tab--active::after {
     content: '';
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
+    left: 8%;
+    right: 8%;
     height: 2px;
     background-color: #8B0000;
   }
@@ -137,16 +128,17 @@
     font-family: "Roboto Mono", monospace;
     font-size: 8px;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     color: currentColor;
     white-space: nowrap;
     flex-shrink: 0;
+    line-height: 1;
   }
 
   .tab-badge {
     position: absolute;
-    top: 6px;
-    right: calc(50% - 14px);
+    top: 8px;
+    right: calc(50% - 16px);
     background-color: #8B0000;
     color: #E8E8E8;
     font-family: "Roboto Mono", monospace;

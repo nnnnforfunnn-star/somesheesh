@@ -1,21 +1,38 @@
 <script>
+  import { onMount } from 'svelte';
   import ControlPanel from './components/ControlPanel.svelte';
   import CanvasPanel from './components/CanvasPanel.svelte';
   import Header from './components/Header.svelte';
   import MobileNav from './components/MobileNav.svelte';
   import MobileDrawer from './components/MobileDrawer.svelte';
+
+  let isMobile = false;
+
+  onMount(() => {
+    const mql = window.matchMedia('(max-width: 768px)');
+    isMobile = mql.matches;
+    const handler = (e) => { isMobile = e.matches; };
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  });
 </script>
 
 <div class="app-shell">
   <Header />
-  <main class="workspace">
-    <div class="desktop-panel">
+
+  <div class="workspace">
+    {#if !isMobile}
       <ControlPanel />
-    </div>
-    <CanvasPanel />
-  </main>
-  <MobileDrawer />
-  <MobileNav />
+    {/if}
+    <CanvasPanel {isMobile} />
+  </div>
+
+  {#if isMobile}
+    <!-- Nav sits in normal document flow at the bottom — no fixed positioning needed -->
+    <MobileNav />
+    <!-- Drawer overlays the canvas — uses position:fixed -->
+    <MobileDrawer />
+  {/if}
 </div>
 
 <style>
@@ -34,21 +51,5 @@
     flex: 1;
     overflow: hidden;
     min-height: 0;
-  }
-
-  .desktop-panel {
-    display: flex;
-    height: 100%;
-  }
-
-  @media (max-width: 768px) {
-    .desktop-panel {
-      display: none;
-    }
-
-    /* Reserve space at bottom so canvas is not hidden under fixed nav */
-    .workspace {
-      padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-    }
   }
 </style>
