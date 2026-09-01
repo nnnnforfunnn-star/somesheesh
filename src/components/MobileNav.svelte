@@ -2,67 +2,44 @@
   import { activeMobileTab, drawerOpen, toggleTab } from '../stores/mobile.js';
   import { layers, selectedLayer } from '../stores/canvas.js';
 
-  // Nav tabs definition
   const tabs = [
     {
       id: 'tools',
       label: 'ИНСТРУМ.',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     },
     {
       id: 'text',
       label: 'ТЕКСТ',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <polyline points="4 7 4 4 20 4 20 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polyline points="4 7 4 4 20 4 20 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="20" x2="15" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     },
     {
       id: 'images',
       label: 'ФОТО',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/>
-        <polyline points="21 15 16 10 5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.5"/><polyline points="21 15 16 10 5 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     },
     {
       id: 'theme',
       label: 'ТЕМА',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M12 2a10 10 0 0 1 0 20" fill="currentColor" opacity="0.3"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M12 2a10 10 0 0 1 0 20" fill="currentColor" opacity="0.25"/></svg>`,
     },
     {
       id: 'layers',
       label: 'СЛОИ',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <polygon points="12 2 2 7 12 12 22 7 12 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="2 17 12 22 22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="2 12 12 17 22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><polygon points="12 2 2 7 12 12 22 7 12 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="2 17 12 22 22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="2 12 12 17 22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     },
     {
       id: 'export',
       label: 'ЭКСПОРТ',
-      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>`,
+      icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
     },
   ];
 
-  // Show badge on layers tab
   $: layerCount = $layers.length;
-  // Show badge on text tab when a text layer is selected
   $: hasTextSelected = $selectedLayer?.type === 'text';
 </script>
 
+<!-- Hidden on desktop, fixed at bottom on mobile -->
 <nav class="mobile-nav" aria-label="Навигация по панелям">
   {#each tabs as tab}
     <button
@@ -83,17 +60,27 @@
 </nav>
 
 <style>
+  /* Hidden on desktop */
   .mobile-nav {
-    display: flex;
-    align-items: stretch;
-    /* min-height instead of height: safe-area-inset padding must not
-       compress the icon+label content inside the nav tabs */
-    min-height: 60px;
-    height: calc(60px + env(safe-area-inset-bottom, 0px));
-    background-color: #1E1E1E;
-    border-top: 1px solid #2A2A2A;
-    flex-shrink: 0;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-nav {
+      /* Fixed to bottom of viewport — independent of document flow */
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      /* 60px for icons+labels, extra for safe-area notch */
+      height: calc(60px + env(safe-area-inset-bottom, 0px));
+      align-items: flex-start;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background-color: #1E1E1E;
+      border-top: 1px solid #333333;
+      z-index: 100;
+    }
   }
 
   .nav-tab {
@@ -108,13 +95,12 @@
     color: #555555;
     cursor: pointer;
     position: relative;
-    transition: color 0.15s, background-color 0.15s;
-    padding: 6px 2px;
+    transition: color 0.15s;
+    padding: 8px 2px;
     -webkit-tap-highlight-color: transparent;
-    /* Override global mobile min-height rule — nav tabs must fill
-       the flex row, not be driven by a minimum height value */
-    min-height: unset;
-    height: 60px;
+    /* Explicit 60px — must not be overridden by any global rule */
+    height: 60px !important;
+    min-height: unset !important;
   }
 
   .nav-tab:active {
@@ -144,6 +130,7 @@
     align-items: center;
     justify-content: center;
     color: currentColor;
+    flex-shrink: 0;
   }
 
   .tab-label {
@@ -153,6 +140,7 @@
     letter-spacing: 0.05em;
     color: currentColor;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .tab-badge {

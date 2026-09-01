@@ -8,29 +8,22 @@
 
 <div class="app-shell">
   <Header />
-
   <main class="workspace">
-    <!-- Desktop: side panel (hidden on mobile via CSS) -->
     <div class="desktop-panel">
       <ControlPanel />
     </div>
-
-    <!-- Canvas: always visible -->
     <CanvasPanel />
   </main>
-
-  <!-- Mobile: slide-up drawer + bottom nav (hidden on desktop via CSS) -->
-  <div class="mobile-ui">
-    <MobileDrawer />
-    <MobileNav />
-  </div>
+  <MobileDrawer />
+  <MobileNav />
 </div>
 
 <style>
   .app-shell {
     display: flex;
     flex-direction: column;
-    height: 100dvh; /* dynamic viewport height for mobile browsers */
+    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
     background-color: #121212;
@@ -43,27 +36,19 @@
     min-height: 0;
   }
 
-  /* Desktop panel: visible only above mobile breakpoint */
   .desktop-panel {
     display: flex;
     height: 100%;
   }
 
-  /* Mobile UI: hidden on desktop */
-  .mobile-ui {
-    display: none;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  /* --- Mobile breakpoint (portrait phones and small tablets) --- */
   @media (max-width: 768px) {
     .desktop-panel {
       display: none;
     }
 
-    .mobile-ui {
-      display: flex;
+    /* Reserve space at bottom so canvas is not hidden under fixed nav */
+    .workspace {
+      padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     }
   }
 </style>

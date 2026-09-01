@@ -10,20 +10,14 @@
   import LayerList from './LayerList.svelte';
   import ExportControls from './ExportControls.svelte';
 
-  // Drawer height as fraction of viewport
-  const DRAWER_HEIGHT = '72vh';
-
-  // Close on backdrop click
   function handleBackdropClick() {
     closeDrawer();
   }
 
-  // Prevent touch events from propagating through drawer to canvas
   function stopPropagation(e) {
     e.stopPropagation();
   }
 
-  // Tab -> section title mapping
   const tabTitles = {
     tools:  'ИНСТРУМЕНТЫ',
     text:   'ТЕКСТ',
@@ -34,30 +28,24 @@
   };
 </script>
 
-<!-- Backdrop -->
+<!-- Backdrop: only rendered when open, only on mobile -->
 {#if $drawerOpen}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="drawer-backdrop"
-    on:click={handleBackdropClick}
-    aria-hidden="true"
-  ></div>
+  <div class="drawer-backdrop" on:click={handleBackdropClick} aria-hidden="true"></div>
 {/if}
 
-<!-- Drawer panel -->
-<div
+<!-- Drawer: always in DOM, slides with transform -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<aside
   class="mobile-drawer"
   class:mobile-drawer--open={$drawerOpen}
   on:touchstart={stopPropagation}
   on:touchmove={stopPropagation}
-  role="complementary"
-  tabindex="-1"
   aria-label={tabTitles[$activeMobileTab] ?? 'Панель'}
+  aria-hidden={!$drawerOpen}
 >
-  <!-- Drag handle -->
   <div class="drawer-handle-bar">
-    <div class="drawer-handle"></div>
     <span class="drawer-title">{tabTitles[$activeMobileTab] ?? ''}</span>
     <button class="drawer-close" on:click={closeDrawer} aria-label="Закрыть панель">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -67,7 +55,6 @@
     </button>
   </div>
 
-  <!-- Scrollable content -->
   <div class="drawer-content">
     {#if $activeMobileTab === 'tools'}
       <div class="drawer-section">
@@ -78,9 +65,7 @@
         {#if $selectedLayer?.type === 'text'}
           <TextControls />
         {:else}
-          <p class="drawer-hint">
-            Выберите текстовый слой на холсте или добавьте новый через инструмент ТЕКСТ.
-          </p>
+          <p class="drawer-hint">Выберите текстовый слой на холсте или добавьте новый через инструмент ТЕКСТ.</p>
         {/if}
       </div>
     {:else if $activeMobileTab === 'images'}
@@ -103,36 +88,55 @@
       </div>
     {/if}
   </div>
-</div>
+</aside>
 
 <style>
+  /* Backdrop: hidden on desktop */
   .drawer-backdrop {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 40;
-    /* Backdrop appears only on mobile */
+    display: none;
   }
 
+  /* Drawer: hidden on desktop */
   .mobile-drawer {
-    position: fixed;
-    left: 0;
-    right: 0;
-    /* Must match actual nav height including safe area on notched phones */
-    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-    height: 72dvh;
-    background-color: #1E1E1E;
-    border-top: 1px solid #333333;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transform: translateY(100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: none;
   }
 
-  .mobile-drawer--open {
-    transform: translateY(0);
+  @media (max-width: 768px) {
+    .drawer-backdrop {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      /* Stop above the nav bar so backdrop does not cover it */
+      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+      background-color: rgba(0, 0, 0, 0.55);
+      z-index: 40;
+    }
+
+    .mobile-drawer {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      right: 0;
+      /* Sit directly above the nav bar */
+      bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+      /* vh fallback first, then dvh override for browsers that support it */
+      height: 72vh;
+      height: 72dvh;
+      background-color: #1E1E1E;
+      border-top: 1px solid #333333;
+      z-index: 50;
+      overflow: hidden;
+      /* Closed: pushed down by full height, invisible */
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mobile-drawer--open {
+      transform: translateY(0);
+    }
   }
 
   .drawer-handle-bar {
@@ -142,16 +146,7 @@
     flex-shrink: 0;
     gap: 10px;
     border-bottom: 1px solid #2A2A2A;
-  }
-
-  .drawer-handle {
-    width: 36px;
-    height: 3px;
-    background-color: #444444;
-    border-radius: 2px;
-    flex-shrink: 0;
-    /* Not using this as a drag handle currently, just decorative */
-    display: none;
+    min-height: 44px;
   }
 
   .drawer-title {
@@ -168,16 +163,15 @@
     border: none;
     color: #555555;
     cursor: pointer;
-    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     -webkit-tap-highlight-color: transparent;
-    /* Override global mobile button min-height so the close button
-       stays compact inside the handle bar */
-    min-height: unset;
-    height: 32px;
-    width: 32px;
+    /* Immune to any global min-height rules */
+    width: 32px !important;
+    height: 32px !important;
+    min-height: unset !important;
+    padding: 4px;
   }
 
   .drawer-close:active {
