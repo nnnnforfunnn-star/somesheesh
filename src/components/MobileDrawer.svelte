@@ -118,15 +118,15 @@
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 60px; /* above nav bar */
-    height: 72vh;
+    /* Must match actual nav height including safe area on notched phones */
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    height: 72dvh;
     background-color: #1E1E1E;
     border-top: 1px solid #333333;
     z-index: 50;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Slide up/down transition */
     transform: translateY(100%);
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -173,6 +173,11 @@
     align-items: center;
     justify-content: center;
     -webkit-tap-highlight-color: transparent;
+    /* Override global mobile button min-height so the close button
+       stays compact inside the handle bar */
+    min-height: unset;
+    height: 32px;
+    width: 32px;
   }
 
   .drawer-close:active {

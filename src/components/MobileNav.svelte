@@ -86,11 +86,13 @@
   .mobile-nav {
     display: flex;
     align-items: stretch;
-    height: 60px;
+    /* min-height instead of height: safe-area-inset padding must not
+       compress the icon+label content inside the nav tabs */
+    min-height: 60px;
+    height: calc(60px + env(safe-area-inset-bottom, 0px));
     background-color: #1E1E1E;
     border-top: 1px solid #2A2A2A;
     flex-shrink: 0;
-    /* safe area for notched phones */
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
@@ -109,6 +111,10 @@
     transition: color 0.15s, background-color 0.15s;
     padding: 6px 2px;
     -webkit-tap-highlight-color: transparent;
+    /* Override global mobile min-height rule — nav tabs must fill
+       the flex row, not be driven by a minimum height value */
+    min-height: unset;
+    height: 60px;
   }
 
   .nav-tab:active {

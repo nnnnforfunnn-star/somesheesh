@@ -116,11 +116,6 @@ button {
     height: 100dvh;
   }
 
-  /* Larger tap targets on mobile for all buttons */
-  button {
-    min-height: 36px;
-  }
-
   /* Prevent double-tap zoom on interactive elements */
   button, input, textarea, select, a {
     touch-action: manipulation;
@@ -135,11 +130,13 @@ button {
   /* Range sliders: bigger touch area */
   input[type="range"] {
     height: 20px;
+    min-height: unset;
   }
 
   /* Color pickers larger on mobile */
   input[type="color"] {
     width: 44px;
     height: 40px;
+    min-height: unset;
   }
 }
