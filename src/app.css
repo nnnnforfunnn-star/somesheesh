@@ -108,3 +108,38 @@ button {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* --- Mobile styles --- */
+@media (max-width: 768px) {
+  html, body, #app {
+    /* Ensure full height including safe areas on notched phones */
+    height: 100dvh;
+  }
+
+  /* Larger tap targets on mobile for all buttons */
+  button {
+    min-height: 36px;
+  }
+
+  /* Prevent double-tap zoom on interactive elements */
+  button, input, textarea, select, a {
+    touch-action: manipulation;
+  }
+
+  /* Larger inputs on mobile for easier typing */
+  input, textarea, select {
+    font-size: 16px; /* Prevents iOS auto-zoom on focus */
+    min-height: 40px;
+  }
+
+  /* Range sliders: bigger touch area */
+  input[type="range"] {
+    height: 20px;
+  }
+
+  /* Color pickers larger on mobile */
+  input[type="color"] {
+    width: 44px;
+    height: 40px;
+  }
+}
