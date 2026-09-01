@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme {
+  /* True Crime color palette — flat solid colors only */
+  --color-graphite:     #121212;
+  --color-anthracite:   #1E1E1E;
+  --color-panel:        #252525;
+  --color-surface:      #2A2A2A;
+  --color-border:       #333333;
+  --color-border-dim:   #2A2A2A;
+
+  --color-crimson:      #8B0000;
+  --color-crimson-dim:  #6B0000;
+  --color-crimson-lite: #A01010;
+
+  --color-kraft:        #D2B48C;
+  --color-kraft-dim:    #B89A72;
+  --color-kraft-dark:   #8B6914;
+
+  --color-text-primary:   #E8E8E8;
+  --color-text-secondary: #9A9A9A;
+  --color-text-muted:     #555555;
+  --color-text-crimson:   #CC2222;
+
+  --font-mono: "Roboto Mono", "Courier New", monospace;
+
+  --radius-none: 0px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+}
+
+/* Global reset and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "Roboto Mono", "Courier New", monospace;
+  background-color: #121212;
+  color: #E8E8E8;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #1E1E1E;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8B0000;
+}
+
+/* Input / textarea base */
+input, textarea, select {
+  font-family: "Roboto Mono", "Courier New", monospace;
+  font-size: 13px;
+  background: #1E1E1E;
+  border: 1px solid #333333;
+  color: #E8E8E8;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: #8B0000;
+}
+
+/* Button base */
+button {
+  font-family: "Roboto Mono", "Courier New", monospace;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+/* Selection highlight */
+::selection {
+  background: #8B0000;
+  color: #E8E8E8;
+}
+
+/* Utility: visually hidden */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
