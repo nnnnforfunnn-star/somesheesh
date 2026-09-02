@@ -23,9 +23,11 @@ export const LAYER_TYPES = {
 export const activeTool = writable('select');
 
 // Array of all layers on canvas. Each layer is a plain object.
+/** @type {import('svelte/store').Writable<any[]>} */
 export const layers = writable([]);
 
 // Currently selected layer ID
+/** @type {import('svelte/store').Writable<string|null>} */
 export const selectedLayerId = writable(null);
 
 // Canvas display scale (how the 1080x1350 canvas fits in the viewport)

@@ -14,6 +14,7 @@
     closeDrawer();
   }
 
+  /** @param {Event} e */
   function stopPropagation(e) {
     e.stopPropagation();
   }
@@ -47,10 +48,10 @@
   on:touchstart={stopPropagation}
   on:touchmove={stopPropagation}
   aria-hidden={!$drawerOpen}
-  aria-label={tabTitles[$activeMobileTab] ?? 'Панель'}
+  aria-label={$activeMobileTab ? tabTitles[$activeMobileTab] : 'Панель'}
 >
   <div class="drawer-handle-bar">
-    <span class="drawer-title">{tabTitles[$activeMobileTab] ?? ''}</span>
+    <span class="drawer-title">{$activeMobileTab ? tabTitles[$activeMobileTab] : ''}</span>
     <button class="drawer-close" on:click={closeDrawer} aria-label="Закрыть">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -93,7 +94,7 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 60px;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 40;
   }
@@ -107,7 +108,7 @@
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 60px;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     height: 70vh;
     background-color: #1E1E1E;
     border-top: 1px solid #333333;

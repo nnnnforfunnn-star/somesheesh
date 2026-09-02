@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 
 // Active panel tab on mobile bottom nav
 // Possible values: null | 'tools' | 'text' | 'images' | 'theme' | 'layers' | 'export'
+/** @type {import('svelte/store').Writable<string|null>} */
 export const activeMobileTab = writable(null);
 
 // Whether the mobile drawer is open

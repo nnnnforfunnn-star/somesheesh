@@ -4,6 +4,7 @@
   import { clearCanvas } from '../stores/canvas.js';
 
   let exporting = false;
+  /** @type {'png'|'jpeg'} */
   let format = 'png';
   let filename = 'casefile_post';
 
