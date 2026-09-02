@@ -9,6 +9,7 @@
   import CanvasSettingsPanel from './CanvasSettingsPanel.svelte';
   import LayerList from './LayerList.svelte';
   import ExportControls from './ExportControls.svelte';
+  import SmartGenerator from './SmartGenerator.svelte';
 
   function handleBackdropClick() {
     closeDrawer();
@@ -20,6 +21,7 @@
   }
 
   const tabTitles = {
+    generate: 'СМАРТ-ГЕНЕРАТОР',
     tools:  'ИНСТРУМЕНТЫ',
     text:   'ТЕКСТ',
     images: 'ИЗОБРАЖЕНИЯ',
@@ -61,7 +63,9 @@
   </div>
 
   <div class="drawer-content">
-    {#if $activeMobileTab === 'tools'}
+    {#if $activeMobileTab === 'generate'}
+      <div class="drawer-section" style="background-color: #1A0000;"><SmartGenerator /></div>
+    {:else if $activeMobileTab === 'tools'}
       <div class="drawer-section"><ToolBar /></div>
     {:else if $activeMobileTab === 'text'}
       <div class="drawer-section">

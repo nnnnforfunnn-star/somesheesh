@@ -22,9 +22,61 @@ export const LAYER_TYPES = {
 // Active editing tool
 export const activeTool = writable('select');
 
-// Array of all layers on canvas. Each layer is a plain object.
-/** @type {import('svelte/store').Writable<any[]>} */
-export const layers = writable([]);
+// Array of all slides. Each slide is an array of layer objects.
+/** @type {import('svelte/store').Writable<any[][]>} */
+export const slides = writable([ [] ]);
+
+// Current slide index
+/** @type {import('svelte/store').Writable<number>} */
+export const currentSlideIndex = writable(0);
+
+// Proxy store for current slide's layers to maintain backwards compatibility
+export const layers = {
+  subscribe: (cb) => {
+    return derived([slides, currentSlideIndex], ([$slides, $idx]) => $slides[$idx] || []).subscribe(cb);
+  },
+  set: (val) => {
+    slides.update(s => {
+      s[get(currentSlideIndex)] = val;
+      return [...s];
+    });
+  },
+  update: (fn) => {
+    slides.update(s => {
+      const idx = get(currentSlideIndex);
+      s[idx] = fn(s[idx] || []);
+      return [...s];
+    });
+  }
+};
+
+// --- Slide Management ---
+export function addSlide() {
+  slides.update(s => [...s, []]);
+  currentSlideIndex.update(idx => idx + 1);
+}
+
+export function nextSlide() {
+  currentSlideIndex.update(idx => Math.min(idx + 1, get(slides).length - 1));
+  selectedLayerId.set(null);
+}
+
+export function prevSlide() {
+  currentSlideIndex.update(idx => Math.max(idx - 1, 0));
+  selectedLayerId.set(null);
+}
+
+export function removeSlide(index) {
+  slides.update(s => {
+    if (s.length <= 1) return [ [] ];
+    return s.filter((_, i) => i !== index);
+  });
+  currentSlideIndex.update(idx => {
+    if (idx >= index && idx > 0) return idx - 1;
+    return idx;
+  });
+  selectedLayerId.set(null);
+}
 
 // Currently selected layer ID
 /** @type {import('svelte/store').Writable<string|null>} */

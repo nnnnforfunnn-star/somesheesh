@@ -2,6 +2,8 @@
   import { getStage, getDisplayScale } from '../canvas/stage.js';
   import { exportCanvasToFile } from '../canvas/exportCanvas.js';
   import { clearCanvas } from '../stores/canvas.js';
+  import { slides, currentSlideIndex } from '../stores/canvas.js';
+  import { tick } from 'svelte';
 
   let exporting = false;
   /** @type {'png'|'jpeg'} */
@@ -23,6 +25,35 @@
         displayScale: getDisplayScale(),
       });
     } finally {
+      exporting = false;
+    }
+  }
+
+  async function doExportAll() {
+    const stage = getStage();
+    if (!stage) return;
+    
+    exporting = true;
+    const originalIndex = $currentSlideIndex;
+    
+    try {
+      for (let i = 0; i < $slides.length; i++) {
+        $currentSlideIndex = i;
+        await tick();
+        // Wait a tiny bit for Konva to render the new layer state
+        await new Promise(r => setTimeout(r, 100));
+        
+        await exportCanvasToFile(stage, {
+          format,
+          quality: 0.95,
+          filename: `${filename}_${i + 1}`,
+          nativeWidth:  1080,
+          nativeHeight: 1350,
+          displayScale: getDisplayScale(),
+        });
+      }
+    } finally {
+      $currentSlideIndex = originalIndex;
       exporting = false;
     }
   }
@@ -80,9 +111,25 @@
         <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
       </svg>
-      СКАЧАТЬ {format.toUpperCase()}
+      ТЕКУЩИЙ СЛАЙД ({format.toUpperCase()})
     {/if}
   </button>
+
+  {#if $slides.length > 1}
+  <!-- Export All button -->
+  <button
+    class="export-btn export-btn--all"
+    on:click={doExportAll}
+    disabled={exporting}
+  >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="3" y1="9" x2="21" y2="9" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="9" y1="21" x2="9" y2="9" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    СКАЧАТЬ ВСЕ СЛАЙДЫ ({$slides.length})
+  </button>
+  {/if}
 
   <!-- Clear canvas -->
   <button class="clear-btn" on:click={handleClear}>
@@ -187,6 +234,15 @@
 
   .export-btn:hover:not(:disabled) {
     background-color: #A01010;
+  }
+
+  .export-btn--all {
+    background-color: #D2B48C;
+    color: #121212;
+  }
+
+  .export-btn--all:hover:not(:disabled) {
+    background-color: #B89A72;
   }
 
   .export-btn:disabled {

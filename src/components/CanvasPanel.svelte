@@ -9,15 +9,17 @@
     destroyStage,
     resizeStage,
   } from '../canvas/stage.js';
+  import SlideNav from './SlideNav.svelte';
 
   export let isMobile = false;
 
   let containerEl;
   let wrapperEl;
+  let canvasWrapperEl;
   let resizeObserver;
 
   onMount(() => {
-    const { width, height } = wrapperEl.getBoundingClientRect();
+    const { width, height } = canvasWrapperEl.getBoundingClientRect();
     const padding = isMobile ? 0 : 64;
     initStage(containerEl, width - padding, height - padding);
 
@@ -28,7 +30,7 @@
         resizeStage(width - pad, height - pad);
       }
     });
-    resizeObserver.observe(wrapperEl);
+    resizeObserver.observe(canvasWrapperEl);
 
     const unsubLayers   = layers.subscribe(() => renderAll());
     const unsubSettings = canvasSettings.subscribe(() => refreshBackground());
@@ -48,17 +50,17 @@
 </script>
 
 <section class="canvas-panel" bind:this={wrapperEl}>
-  <div class="canvas-wrapper">
+  <div class="canvas-wrapper" bind:this={canvasWrapperEl}>
     <div class="konva-container" bind:this={containerEl}></div>
   </div>
+  <SlideNav />
 </section>
 
 <style>
   .canvas-panel {
     flex: 1;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     background-color: #121212;
     overflow: hidden;
     position: relative;

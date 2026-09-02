@@ -6,6 +6,7 @@
   import CanvasSettingsPanel from './CanvasSettingsPanel.svelte';
   import LayerList from './LayerList.svelte';
   import ExportControls from './ExportControls.svelte';
+  import SmartGenerator from './SmartGenerator.svelte';
   import { activeTool, selectedLayer } from '../stores/canvas.js';
 
   // Show text controls only when a text layer is selected or text tool is active
@@ -13,6 +14,11 @@
 </script>
 
 <aside class="control-panel">
+  <!-- SMART GENERATOR -->
+  <section class="panel-section" style="background-color: #1A0000; border-bottom: 2px solid #8B0000;">
+    <SmartGenerator />
+  </section>
+
   <!-- Tool selection -->
   <section class="panel-section">
     <ToolBar />
