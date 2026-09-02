@@ -77,7 +77,8 @@
     border-right: 1px solid #2A2A2A;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     flex-shrink: 0;
   }
 
@@ -87,11 +88,11 @@
   }
 
   .panel-section--grow {
-    flex: 1;
-    overflow: hidden;
+    flex: 1 0 auto;
+    overflow: visible;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: 200px;
   }
 
   .panel-divider {

@@ -178,13 +178,26 @@ export function renderAll() {
   // Re-render red thread if in evidence mode
   renderRedThread(sorted);
 
-  // Sync z-order
+  // Re-render red thread if in evidence mode
+  renderRedThread(sorted);
+
+  syncZIndex();
+}
+
+/**
+ * Synchronizes Konva node z-index with store z-index.
+ * Called during renderAll and after async images load.
+ */
+function syncZIndex() {
+  if (!mainLayer) return;
+  const $layers = get(layers);
+  const sorted = [...$layers].sort((a, b) => a.zIndex - b.zIndex);
+  
   for (const layer of sorted) {
     const node = nodeMap.get(layer.id);
     if (node) node.moveToTop();
   }
-  transformer.moveToTop();
-
+  if (transformer) transformer.moveToTop();
   mainLayer.batchDraw();
 }
 
@@ -254,9 +267,10 @@ function updateKonvaNode(layer) {
 
   if (layer.type === LAYER_TYPES.REDACTION) {
     node.setAttrs({
-      width:  layer.width,
-      height: layer.height,
-      fill:   layer.fill ?? '#000000',
+      width:   layer.width,
+      height:  layer.height,
+      fill:    layer.fill ?? '#000000',
+      opacity: layer.opacity ?? 1,
     });
   }
 }
@@ -337,8 +351,7 @@ function createImageNode(layer) {
     attachNodeEvents(node, layer.id);
     mainLayer.add(node);
     nodeMap.set(layer.id, node);
-    transformer.moveToTop();
-    mainLayer.batchDraw();
+    syncZIndex();
   };
 
   if (imageCache.has(layer.src)) {
@@ -365,6 +378,7 @@ function createRedactionNode(layer) {
     height: layer.height,
     rotation: layer.rotation ?? 0,
     fill: layer.fill ?? '#000000',
+    opacity: layer.opacity ?? 1,
     visible: layer.visible !== false,
     draggable: !layer.locked,
     name: 'layer-node',

@@ -73,14 +73,23 @@
     display: flex;
     flex-shrink: 0;
     width: 100%;
-    background-color: #1E1E1E;
-    border-top: 2px solid #8B0000;
-    /* Fixed 60px content height + safe area below for notched phones */
+    height: calc(60px + env(safe-area-inset-bottom, 0px));
+    background-color: #1A1A1A;
+    border-top: 1px solid #333333;
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  .mobile-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .nav-tab {
-    flex: 1;
+    flex: 0 0 auto;
+    min-width: 68px;
     display: flex;
     flex-direction: column;
     align-items: center;

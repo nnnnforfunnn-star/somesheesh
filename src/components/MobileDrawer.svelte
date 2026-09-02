@@ -169,12 +169,13 @@
   .drawer-content {
     flex: 1;
     overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow-x: hidden;
+    padding-bottom: 80px;
     -webkit-overflow-scrolling: touch;
   }
 
   .drawer-section {
-    padding: 14px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { slides, currentSlideIndex, makeTextLayer, makeImageLayer, LAYER_TYPES, CANVAS_WIDTH, CANVAS_HEIGHT } from '../stores/canvas.js';
+import { slides, currentSlideIndex, makeTextLayer, makeImageLayer, makeRedactionLayer, LAYER_TYPES, CANVAS_WIDTH, CANVAS_HEIGHT } from '../stores/canvas.js';
 
 /**
  * layoutEngine.js
@@ -74,23 +74,35 @@ export async function generatePost(rawText, images) {
       zIndex: 1
     }));
     
+    // Dark overlay for readability
+    coverSlide.push(makeRedactionLayer({
+      x: 0,
+      y: 0,
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
+      fill: '#000000',
+      opacity: 0.65,
+      locked: true,
+      zIndex: 2
+    }));
+    
     // Add title if we have text
     if (textChunks.length > 0) {
-      // Use first 50 chars of first chunk as title
-      let titleText = textChunks[0].substring(0, 50);
-      if (textChunks[0].length > 50) titleText += '...';
+      // Use first 70 chars of first chunk as title
+      let titleText = textChunks[0].substring(0, 70);
+      if (textChunks[0].length > 70) titleText += '...';
       
       coverSlide.push(makeTextLayer({
-        text: 'ДЕЛО №' + Math.floor(Math.random() * 10000) + '\n\n' + titleText.toUpperCase(),
+        text: 'Д Е Л О  №' + Math.floor(Math.random() * 10000) + '\n\n' + titleText.toUpperCase(),
         x: 100,
-        y: CANVAS_HEIGHT / 2 - 150,
+        y: CANVAS_HEIGHT / 2 - 200,
         width: CANVAS_WIDTH - 200,
-        height: 300,
-        fontSize: 64,
+        height: 400,
+        fontSize: 72,
         align: 'center',
         color: '#FFFFFF',
         fontWeight: '700',
-        zIndex: 2,
+        zIndex: 3,
         autoFit: true
       }));
     }
@@ -115,15 +127,27 @@ export async function generatePost(rawText, images) {
         zIndex: 1
       }));
       
-      slide.push(makeTextLayer({
-        text: chunk,
+      // Text backdrop
+      slide.push(makeRedactionLayer({
         x: margin,
         y: CANVAS_HEIGHT / 2 + margin / 2,
         width: CANVAS_WIDTH - margin * 2,
         height: CANVAS_HEIGHT / 2 - margin * 1.5,
+        fill: '#121212',
+        opacity: 0.85,
+        locked: true,
+        zIndex: 2
+      }));
+
+      slide.push(makeTextLayer({
+        text: chunk,
+        x: margin + 40,
+        y: CANVAS_HEIGHT / 2 + margin / 2 + 40,
+        width: CANVAS_WIDTH - margin * 2 - 80,
+        height: CANVAS_HEIGHT / 2 - margin * 1.5 - 80,
         fontSize: 36,
         align: 'left',
-        zIndex: 2,
+        zIndex: 3,
         autoFit: true
       }));
     } else {
