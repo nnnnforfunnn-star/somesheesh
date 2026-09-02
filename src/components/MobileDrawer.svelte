@@ -20,6 +20,7 @@
     e.stopPropagation();
   }
 
+  /** @type {Record<string, string>} */
   const tabTitles = {
     generate: 'СМАРТ-ГЕНЕРАТОР',
     tools:  'ИНСТРУМЕНТЫ',

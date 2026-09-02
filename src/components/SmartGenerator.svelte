@@ -2,12 +2,17 @@
   import { generatePost } from '../lib/layoutEngine.js';
 
   let rawText = '';
+  /** @type {HTMLInputElement} */
   let fileInputEl;
+  /** @type {File[]} */
   let selectedFiles = [];
   let isGenerating = false;
 
+  /** @param {Event} e */
   function onFileSelected(e) {
-    selectedFiles = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+    const target = /** @type {HTMLInputElement} */ (e.target);
+    if (!target.files) return;
+    selectedFiles = Array.from(target.files).filter(f => f.type.startsWith('image/'));
   }
 
   async function handleGenerate() {
